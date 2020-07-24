@@ -1,0 +1,84 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name = "viewport" content="width=device-width, initial-scale=1">
+  <title> Test Generator 3000 </title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+
+</head>
+
+<body>
+
+  <section class="filecontrols">
+    <button id="new-file">New File</button>
+    <button id="open-file">Open</button>
+    <button id="save-file" disabled>Save</button>
+    <button id="revert" disabled>Revert</button>
+  </section>
+<p>
+  <section class="problemcontrols">
+    <button id="new-problem">New problem</button>
+    <button id="duplicate-problem">duplicate</button>
+    <button id="delete-problem" disabled>delete problem</button>
+    <button id="refresh-preview" disabled>refresh preview</button>
+  </section>
+
+<p>
+
+  <div class="row">
+    <!-- <div class="column"> -->
+      <table id="masterTable">
+        <tbody style="cursor:pointer">
+          <tr> <th>Number</th><th style="width:600px">Description</th> </tr>
+        </tbody>
+      </table>
+    <!-- </div> -->
+
+    <!-- <div class="column"> -->
+    <p>
+
+      <table id="detailTable">
+        <tr>
+          <td><b>Number</b></td>
+          <td><input id="problemNumber" value =1 readonly></input></td>
+        </tr>
+        <tr>
+          <td><b>Desription</b></td>
+          <td> <input id="problemDescription" value = "blah blah" size="40"></input></td>
+        </tr>
+        <tr>
+          <td><b>Text</b></td>
+          <td> <textarea id="questionText" cols=40 rows=10>ABC</textarea></td>
+        </tr>
+        <tr>
+          <td><b>Answers</b></td>
+          <td>ANSWER LIST  </td>
+        </tr>
+        <tr>
+          <td><b>Variables</b></td>
+          <td>VARIABLE DISPLAY</td>
+        </tr>
+        <tr>
+          <td><b>Q Preview</b></td>
+          <td><textarea id='problemPPreview' value = "preview text of problem"cols=40 rows=10 readonly=true></textarea></td>
+        </tr>
+        <tr>
+          <td><b>A Preview </b></td>
+          <td id="problemAPreview">PREVIEW OF ANSWERS</td>
+        </tr>
+
+      </table>
+    <!-- </div> -->
+  </div>
+</section>
+</body>
+
+
+
+<script>
+  require('./renderer');
+</script>
+
+<!-- <script type = "text/javascript" src="pTDummydata.js"></script> -->
+
+</html>
