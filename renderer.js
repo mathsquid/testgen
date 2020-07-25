@@ -2,6 +2,8 @@ const {remote, ipcRenderer} = require('electron');
 const mainProcess = remote.require('./main.js');
 const pb = require('./problems.js');
 
+const currentWindow = remote.getCurrentWindow();
+
 const newFileButton  = document.querySelector('#new-file');;
 const openFileButton = document.querySelector('#open-file');
 const newProblemButton = document.querySelector('#new-problem');
@@ -15,11 +17,13 @@ var questionText = document.querySelector('#questionText');
 var problemPPreview = document.querySelector("#problemPPreview");
 
 
+
 let pip = [];
 var selectedProblemNumber = 1;
 
 
 newFileButton.addEventListener('click', () => {
+  mainProcess.createWindow();
   console.log("newFileButton Pressed");
 });
 
@@ -49,7 +53,7 @@ questionText.addEventListener('keyup', () => {
 
 
 openFileButton.addEventListener('click', () => {
-  mainProcess.getFileFromUser();
+  mainProcess.getFileFromUser(currentWindow);
 });
 
 ipcRenderer.on('file-opened', (event, file, content) => {
