@@ -2,10 +2,20 @@ const {remote, ipcRenderer} = require('electron');
 const mainProcess = remote.require('./main.js');
 const pb = require('./problems.js');
 
+const path = require('path');
+
+
+
+let filePath = null;
+let originalContent = '';
+let latexedOutput = '';
+
 const currentWindow = remote.getCurrentWindow();
 
 const newFileButton  = document.querySelector('#new-file');;
 const openFileButton = document.querySelector('#open-file');
+const saveFileButton = document.querySelector('#save-file');
+const latexButton = document.querySelector('#export-latex');
 const newProblemButton = document.querySelector('#new-problem');
 const duplicateProblemButton = document.querySelector('#duplicate-problem');
 var masterTable = document.querySelector("#masterTable");
@@ -17,9 +27,33 @@ var questionText = document.querySelector('#questionText');
 var problemPPreview = document.querySelector("#problemPPreview");
 
 
-
-let pip = [];
+let pip = []; // pip is the list of problems
 var selectedProblemNumber = 1;
+
+const updateUserInterface = (isEdited) => {
+  let title = 'TestGen3K';
+  if (filePath) {title = `${path.basename(filePath)} - ${title}`;}
+  if (isEdited) {title = `${title} (Edited)`;}
+  currentWindow.setTitle(title);
+  currentWindow.setDocumentEdited((isEdited));
+  saveFileButton.disabled = !isEdited;
+  latexButton.disabled = pip.length > 0 ? 0 : 1;
+}
+
+
+
+
+
+
+
+
+detailTable.addEventListener('keyup', () => {
+
+updateUserInterface(JSON.stringify(pip) != originalContent);
+
+});
+
+
 
 
 newFileButton.addEventListener('click', () => {
@@ -42,6 +76,30 @@ duplicateProblemButton.addEventListener('click', () => {
 
 
 
+latexButton.addEventListener('click', () =>{
+  generateLatex();
+  mainProcess.exportLatex(currentWindow, latexedOutput);
+});
+
+
+function generateLatex(){
+  latexedOutput = '';
+  for (var i=1; i<pip.length; i++){
+    console.log("problem"+ i);
+    latexedOutput = latexedOutput + "\n% Problem " + i + "------------------------------------------\n";
+    latexedOutput = latexedOutput + "\\item \n";
+    pip[i].compileProblem();
+    latexedOutput = latexedOutput + pip[i].processedQuestionText;
+    latexedOutput = latexedOutput + "\n\n";
+  }
+}
+
+
+
+
+
+
+
 problemDescription.addEventListener('keyup', () => {
   pip[selectedProblemNumber].problemDescription = problemDescription.value;
   masterTable.rows[selectedProblemNumber].cells[1].innerText = problemDescription.value;
@@ -58,16 +116,22 @@ openFileButton.addEventListener('click', () => {
 
 ipcRenderer.on('file-opened', (event, file, content) => {
   pip=[];
+  filePath = file;
   const aa =  pb.Problem();
 
+  originalContent = content;
+
   pip = JSON.parse(content);
-  // convert the objects to Problems.
+
   pip.forEach(e => Object.setPrototypeOf(e, pb.Problem.prototype));
+
   pip.unshift(aa); // insert a dummy problem as problem 0 to make the indexing
                    // start at 1, and to make the probelm number match the
                    // row index of masterTable
+                   // convert the objects to Problems.
 
   updateMasterTable();
+  updateUserInterface();
 
   // console.log(pip);
   //
