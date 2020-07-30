@@ -1,10 +1,14 @@
-const {app, BrowserWindow, dialog} = require('electron');
+const {app, BrowserWindow, dialog, Menu} = require('electron');
+const applicationMenu = require('./application-menu');
 const fs = require('fs');
 const windows = new Set();
 
 let mainWindow = null;
 
-app.on('ready', () => {createWindow();});
+app.on('ready', () => {
+  Menu.setApplicationMenu(applicationMenu);
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform === 'darwin') {return false;}
@@ -23,6 +27,8 @@ app.on('will-finish-launching', () =>{
       });
   });
 });
+
+
 
 
 
@@ -51,9 +57,31 @@ const createWindow = exports.createWindow = () => {
     newWindow = null;
   });
 
+  newWindow.on('close', (event) => {
+    if (newWindow.isDocumentEdited()){
+      event.preventDefault();
+      const result = dialog.showMessageBoxSync(newWindow, {
+        type: 'warning',
+        title: 'Discard unsaved changes?',
+        message: 'Unsaved changes will be lost',
+        buttons: [
+          'Discard changes',
+          'Cancel',
+        ],
+        defaultId: 0,
+        cancelId: 1
+      });
+
+      if (result === 0) newWindow.destroy();
+    }
+  });
+
+
   windows.add(newWindow);
   return newWindow;
 }
+
+
 
 
 const getFileFromUser = exports.getFileFromUser = (targetWindow) => {
@@ -87,3 +115,24 @@ const exportLatex = exports.exportLatex = (targetWindow, content) => {
   if (!file) return ;
   fs.writeFileSync(file, content);
 };
+
+
+
+const saveTestFile = exports.saveTestFile = (targetWindow, file, content) =>{
+  if(!file) {
+    file = dialog.showSaveDialogSync(targetWindow, {
+      title: 'Save Test File',
+      defaultPath: app.getPath('desktop'),
+      filters:[
+        {name: 'Latex Files', extensions: ['.test']}
+      ]
+    });
+  }
+
+  if (!file) return;
+
+  // file = file +".txt";  // debug kludge to keep from overwriting my file.
+
+  fs.writeFileSync(file,content);
+  openFile(targetWindow, file);
+}
