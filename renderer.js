@@ -3,12 +3,30 @@ const mainProcess = remote.require('./main.js');
 const pb = require('./problems.js');
 
 const path = require('path');
+const math = require('math.js');
 
 
 
 let filePath = null;
 let originalContent = '';
 let latexedOutput = '';
+let headerText = `\\documentclass{article}
+    \\pagestyle{empty}
+    \\setlength{\\textwidth}{6.5in} \\setlength{\\textheight}{9.5in}
+    \\setlength{\\topmargin}{0in} \\setlength{\\headheight}{0in}
+    \\setlength{\\headsep}{0in} \\setlength{\\oddsidemargin}{0in}
+    \\setlength{\\evensidemargin}{0in} \\setlength{\\marginparwidth}{0in}
+    \\setlength{\\marginparsep}{0in} \\setlength{\\footskip}{0.17in}
+    \\vfuzz2pt
+    \\hfuzz2pt
+    \\parindent=0in
+    \\begin{document}
+    MATH 1634 \\hfill Final Exam A \\hfill Name: \\rule{2in}{.01in}
+
+    Fall 2020
+    \\vspace{2mm}\\hrule
+    \\begin{enumerate}%------------------------------------------------------------------------------\n`
+
 
 const currentWindow = remote.getCurrentWindow();
 
@@ -95,7 +113,11 @@ newProblemButton.addEventListener('click', () => {
 
 
   saveFileButton.addEventListener('click', () => {
-    mainProcess.saveTestFile(currentWindow, filePath,JSON.stringify(pip.slice(1,pip.length)));
+    pip.shift();
+    pip.unshift(headerText);
+    console.log(pip);
+    mainProcess.saveTestFile(currentWindow, filePath,JSON.stringify(pip));
+    // mainProcess.saveTestFile(currentWindow, filePath,JSON.stringify(pip.slice(1,pip.length)));
   });
 
 
@@ -107,6 +129,7 @@ newProblemButton.addEventListener('click', () => {
     problemPPreview.value = pip[selectedProblemNumber].processedQuestionText;
     updateVariableTable();
     //ADD IN refresh answers and variables
+
   });
 
 
@@ -119,9 +142,9 @@ newProblemButton.addEventListener('click', () => {
 
 
   function generateLatex(){
-    latexedOutput = '';
+//    latexedOutput = '';
 
-    latexedOutput = `\\documentclass{article}
+    headerText = `\\documentclass{article}
     \\pagestyle{empty}
     \\setlength{\\textwidth}{6.5in} \\setlength{\\textheight}{9.5in}
     \\setlength{\\topmargin}{0in} \\setlength{\\headheight}{0in}
@@ -137,6 +160,8 @@ newProblemButton.addEventListener('click', () => {
     Fall 2020
     \\vspace{2mm}\\hrule
     \\begin{enumerate}%------------------------------------------------------------------------------\n`
+
+    latexedOutput = headerText;
 
     for (var i=1; i<pip.length; i++){
       console.log("problem"+ i);
@@ -200,6 +225,8 @@ newProblemButton.addEventListener('click', () => {
     console.log(content);
     console.log("piplengthis " + pip.length);
     pip = JSON.parse(content);
+    headerText = pip[0];
+    pip.shift();
     pip.forEach(e => {Object.setPrototypeOf(e, pb.Problem.prototype); console.log("X")});
     pip.unshift(aa); // insert a dummy problem as problem 0 to make the indexing
     // start at 1, and to make the probelm number match the

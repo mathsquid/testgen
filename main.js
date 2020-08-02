@@ -125,14 +125,14 @@ const saveTestFile = exports.saveTestFile = (targetWindow, file, content) =>{
       title: 'Save Test File',
       defaultPath: app.getPath('desktop'),
       filters:[
-        {name: 'Latex Files', extensions: ['.test']}
+        {name: 'Test Files', extensions: ['.test']}
       ]
     });
   }
 
   if (!file) return;
 
-  // file = file +".txt";  // debug kludge to keep from overwriting my file.
+   // file = "new"+file;  // debug kludge to keep from overwriting my file.
 
   fs.writeFileSync(file,content);
   openFile(targetWindow, file);
