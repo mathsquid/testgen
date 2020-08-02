@@ -22,21 +22,20 @@
     <button id="delete-problem" disabled>delete problem</button>
     <button id="refresh-preview" disabled>refresh preview</button>
   </section>
-
 <p>
-
   <div class="row">
-    <!-- <div class="column"> -->
+    <div class="column">
       <table id="masterTable">
         <tbody style="cursor:pointer">
           <tr> <th>Number</th><th style="width:486px">Description</th> </tr>
         </tbody>
       </table>
-    <!-- </div> -->
+    </div>
 
-    <!-- <div class="column"> -->
-    <p>
 
+
+
+    <div class="column2">
       <table id="detailTable">
         <tr>
           <td><b>Number</b></td>
@@ -56,7 +55,20 @@
         </tr>
         <tr>
           <td><b>Variables</b></td>
-          <td>VARIABLE DISPLAY</td>
+          <td>
+
+            <table id = "variableTable">
+              <tr>
+                <th><font size = 2>Name</font></th>
+                <th><font size = 2>Type</font></th>
+                <th><font size = 2>Min</font></th>
+                <th><font size = 2>Max</font></th>
+                <th><font size = 2>Nonzero</font></th>
+                <th><font size = 2>Decimals</font></th>
+                <th><font size = 2>Value</font></th>
+              </tr>
+            </table>
+          </td>
         </tr>
         <tr>
           <td><b>Q Preview</b></td>
@@ -68,7 +80,9 @@
         </tr>
 
       </table>
-    <!-- </div> -->
+    </div>
+
+
   </div>
 </section>
 </body>

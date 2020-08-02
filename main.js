@@ -6,7 +6,7 @@ const windows = new Set();
 let mainWindow = null;
 
 app.on('ready', () => {
-  Menu.setApplicationMenu(applicationMenu);
+ Menu.setApplicationMenu(applicationMenu);
   createWindow();
 });
 
@@ -52,6 +52,7 @@ const createWindow = exports.createWindow = () => {
   newWindow.loadFile('index.html');
   newWindow.webContents.openDevTools();
   newWindow.setSize(1280,850);
+
 
   newWindow.on('closed', () => {
     newWindow = null;
